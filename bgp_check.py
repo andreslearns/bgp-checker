@@ -1,6 +1,6 @@
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_send_command
-from nornir.plugins.functions.text import print_result
+# from nornir.plugins.functions.text import print_result
 from tabulate import tabulate
 from colorama import Fore
 
@@ -19,20 +19,27 @@ headers = [
 
 
 def bgp_check(task):
-    r = task.run(
-        netmiko_send_command, command_string="show ip bgp summary", use_textfsm=True
-    )
-    task.host["bgp_sum"] = r.result
+    """will execute command: show ip bgp in all hosts included in hosts.yaml"""
+    showbgp = task.run(
+        netmiko_send_command,
+        command_string="show ip bgp summary", use_textfsm=True)
+    task.host["bgp_sum"] = showbgp.result
     bgp_sums = task.host["bgp_sum"]
     ipaddress = task.host.hostname
     # bgp states for "up" or "down" status
-    bgp_down_states = ["Idle (Admin)", "Idle (PfxCt)", "Idle", "Active", "Connect"]
+    bgp_down_states = [
+        "Idle (Admin)",
+        "Idle (PfxCt)",
+        "Idle",
+        "Active",
+        "Connect"
+        ]
     bgp_peer_states = ["Open Sent", "Open Confirm"]
 
     for bgp_sum in bgp_sums:
         neighbor = bgp_sum["bgp_neigh"]
         neigh_as = bgp_sum["neigh_as"]
-        router_id = bgp_sum["router_id"]
+        # router_id = bgp_sum["router_id"]
         prefix = bgp_sum["state_pfxrcd"]
         up_down = bgp_sum["up_down"]
         # assigning hostname based on ip address
@@ -109,8 +116,9 @@ def bgp_check(task):
 
 
 def main() -> None:
-    nr = InitNornir(config_file="config.yml")
-    bgp_res = nr.run(task=bgp_check)
+    """Will execute the bgp_check"""
+    bgp = InitNornir(config_file="config.yml")
+    bgp.run(task=bgp_check)
     # int_res = nr.run(task=interface_check)
     # print_result(bgp_res)
     # print_result(int_res)
