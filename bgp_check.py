@@ -1,6 +1,6 @@
-
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_send_command
+
 # from nornir.plugins.functions.text import print_result
 from tabulate import tabulate
 from colorama import Fore, Style
@@ -18,26 +18,21 @@ headers = [
     "Uptime",
     "BGP Status",
     "Ping P2P Result",
-    "Ping P2P Summary"
+    "Ping P2P Summary",
 ]
+
 
 def bgp_check(task):
     """will execute command: show ip bgp in all hosts included in hosts.yaml"""
     showbgp = task.run(
-        netmiko_send_command,
-        command_string="show ip bgp summary", use_textfsm=True)
+        netmiko_send_command, command_string="show ip bgp summary", use_textfsm=True
+    )
     task.host["bgp_sum"] = showbgp.result
     bgp_sums = task.host["bgp_sum"]
     ipaddress = task.host.hostname
     # bgp states for "up" or "down" status
 
-    bgp_down_states = [
-        "Idle (Admin)",
-        "Idle (PfxCt)",
-        "Idle",
-        "Active",
-        "Connect"
-        ]
+    bgp_down_states = ["Idle (Admin)", "Idle (PfxCt)", "Idle", "Active", "Connect"]
     bgp_peer_states = ["Open Sent", "Open Confirm"]
 
     for bgp_sum in bgp_sums:
@@ -61,11 +56,11 @@ def bgp_check(task):
         elif neighbor == "120.89.30.28":
             desc = "EASTERN MAIN"
             source = " 180.232.122.14"
-            destination =" 120.89.30.28"
+            destination = " 120.89.30.28"
         elif neighbor == "172.17.32.165":
             desc = "INCAPSULA HONGKONG"
             source = "180.232.122.14"
-            destination =  "107.154.26.52"
+            destination = "107.154.26.52"
         elif neighbor == "172.17.160.13":
             desc = "INCAPSULA OSAKA"
             source = "180.232.122.14"
@@ -92,19 +87,21 @@ def bgp_check(task):
             source = "121.58.215.186"
             destination = "107.154.33.5"
         elif neighbor == "192.168.88.2":
-            desc = "iBGP CORE-R2""192.168.88.2"
+            desc = "iBGP CORE-R2" "192.168.88.2"
             source = "192.168.88.1"
             destination = "192.168.88.2"
         else:
             desc = "BGP NEIGHBOR ROUTER"
 
-
-        ping_cmd =  task.run(netmiko_send_command, command_string = f"ping {destination} repeat 20 source {source}")
+        ping_cmd = task.run(
+            netmiko_send_command,
+            command_string=f"ping {destination} repeat 20 source {source}",
+        )
         task.host["ping"] = ping_cmd.result
         ping_results = task.host["ping"]
         ping_results = ping_results.split()
         ping = ping_results[24]
-        print(ping_results)
+        # print(ping_results)
 
         if not "!!!!!!!!!!!!!!!!!!!!" in ping:
             ping_sum = Fore.red + Style.BRIGHT + "INTERMITTENT" + Fore.RESET
@@ -124,7 +121,6 @@ def bgp_check(task):
                     Fore.GREEN + Style.BRIGHT + ("UP") + Fore.RESET,
                     ping,
                     ping_sum,
-
                 ]
             )
         elif prefix in bgp_down_states:
@@ -152,11 +148,12 @@ def bgp_check(task):
                     neigh_as,
                     prefix,
                     up_down,
-                    Fore.YELLOW + Style.BRIGHT +  ("WAITING") + Fore.RESET,
+                    Fore.YELLOW + Style.BRIGHT + ("WAITING") + Fore.RESET,
                     ping,
                     ping_sum,
                 ]
             )
+
 
 def main() -> None:
     """Will execute the bgp_check"""
@@ -166,7 +163,6 @@ def main() -> None:
     # print_result(bgp_res)
     # print_result(int_res)
     print(tabulate(sorted(table), headers, tablefmt="rst", colalign="right"))
-
 
 
 if __name__ == "__main__":
