@@ -57,50 +57,57 @@ def bgp_check(task):
         if neighbor == "120.89.30.27":
             desc = "EASTERN BACKUP"
             source = "180.232.122.14"
+            destination = "120.89.30.27"
         elif neighbor == "120.89.30.28":
             desc = "EASTERN MAIN"
             source = " 180.232.122.14"
+            destination =" 120.89.30.28"
         elif neighbor == "172.17.32.165":
             desc = "INCAPSULA HONGKONG"
-            neighbor ="107.154.26.52"
             source = "180.232.122.14"
+            destination =  "107.154.26.52"
         elif neighbor == "172.17.160.13":
             desc = "INCAPSULA OSAKA"
-            neighbor = "107.154.33.5"
             source = "180.232.122.14"
+            destination = "107.154.33.5"
         elif neighbor == "192.168.88.1":
             desc = "iBGP CORE-R1"
             source = "192.168.88.2"
+            destination = "192.168.88.1"
         # R1 assigning description base on bgp neighbors
         elif neighbor == "121.58.215.185":
             desc = "CONVERGE"
             source = "121.58.215.186"
+            destination = "121.58.215.185"
         elif neighbor == "203.177.110.117":
             desc = "GLOBE"
             source = "203.177.110.118"
+            destination = "203.177.110.117"
         elif neighbor == "172.17.32.161":
             desc = "INCAPSULA HONGKONG"
-            neighbor = "107.154.26.52"
             source = "121.58.215.186"
+            destination = "107.154.26.52"
         elif neighbor == "172.17.160.9":
             desc = "INCAPSULA OSAKA"
-            neighbor = "107.154.33.5"
             source = "121.58.215.186"
+            destination = "107.154.33.5"
         elif neighbor == "192.168.88.2":
-            desc = "iBGP CORE-R2"
+            desc = "iBGP CORE-R2""192.168.88.2"
             source = "192.168.88.1"
+            destination = "192.168.88.2"
         else:
             desc = "BGP NEIGHBOR ROUTER"
 
 
-        ping_cmd =  task.run(netmiko_send_command, command_string = f"ping {neighbor} repeat 20 source {source}")
+        ping_cmd =  task.run(netmiko_send_command, command_string = f"ping {destination} repeat 20 source {source}")
         task.host["ping"] = ping_cmd.result
         ping_results = task.host["ping"]
         ping_results = ping_results.split()
         ping = ping_results[24]
+        print(ping_results)
 
         if not "!!!!!!!!!!!!!!!!!!!!" in ping:
-            ping_sum = Fore.RED + Style.BRIGHT + "INTERMITTENT" + Fore.RESET
+            ping_sum = Fore.red + Style.BRIGHT + "INTERMITTENT" + Fore.RESET
         else:
             ping_sum = Fore.GREEN + Style.BRIGHT + "OK" + Fore.RESET
 
@@ -158,7 +165,7 @@ def main() -> None:
     # int_res = nr.run(task=interface_check)
     # print_result(bgp_res)
     # print_result(int_res)
-    print(tabulate(table, headers, tablefmt="rst", colalign="right"))
+    print(tabulate(sorted(table), headers, tablefmt="rst", colalign="right"))
 
 
 
