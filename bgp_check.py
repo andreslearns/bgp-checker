@@ -87,7 +87,7 @@ def bgp_check(task):
             source = "121.58.215.186"
             destination = "107.154.33.5"
         elif neighbor == "192.168.88.2":
-            desc = "iBGP CORE-R2" "192.168.88.2"
+            desc = "iBGP CORE-R2"
             source = "192.168.88.1"
             destination = "192.168.88.2"
         else:
