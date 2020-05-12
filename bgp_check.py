@@ -106,7 +106,7 @@ def bgp_check(task):
         if not "!!!!!!!!!!!!!!!!!!!!" in ping:
             ping_sum = Fore.red + Style.BRIGHT + "INTERMITTENT" + Fore.RESET
         else:
-            ping_sum = Fore.GREEN + Style.BRIGHT + "OK" + Fore.RESET
+            ping_sum = Fore.GREEN + Style.BRIGHT + "OK! No RTO" + Fore.RESET
 
         if prefix not in bgp_down_states:
             table.append(
