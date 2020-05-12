@@ -1,10 +1,11 @@
+from datetime import datetime
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_send_command
 # from nornir.plugins.functions.text import print_result
 from tabulate import tabulate
 from colorama import Fore, Style
 
-
+start_time = datetime.now()
 # empty list for appending
 table = []
 headers = [
@@ -26,6 +27,7 @@ def bgp_check(task):
     showbgp = task.run(
         netmiko_send_command, command_string="show ip bgp summary", use_textfsm=True
     )
+    
     task.host["bgp_sum"] = showbgp.result
     bgp_sums = task.host["bgp_sum"]
     ipaddress = task.host.hostname
@@ -165,7 +167,8 @@ def main() -> None:
     # print_result(bgp_res)
     # print_result(int_res)
     print(tabulate(sorted(table), headers, tablefmt="rst", colalign="right"))
-
+    date_time = datetime.now() - start_time
+    print(f"execution-time: {date_time}")
 
 if __name__ == "__main__":
     main()
