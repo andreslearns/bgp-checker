@@ -1,6 +1,5 @@
 from nornir import InitNornir
 from nornir.plugins.tasks.networking import netmiko_send_command
-
 # from nornir.plugins.functions.text import print_result
 from tabulate import tabulate
 from colorama import Fore, Style
