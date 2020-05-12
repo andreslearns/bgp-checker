@@ -34,6 +34,9 @@ def bgp_check(task):
 
     bgp_down_states = ["Idle (Admin)", "Idle (PfxCt)", "Idle", "Active", "Connect"]
     bgp_peer_states = ["Open Sent", "Open Confirm"]
+    up = Fore.GREEN + Style.BRIGHT + ("UP") + Fore.RESET
+    down = Fore.RED + Style.BRIGHT + ("DOWN") + Fore.RESET
+    waiting = Fore.YELLOW + Style.BRIGHT + ("WAITING") + Fore.RESET
 
     for bgp_sum in bgp_sums:
         neighbor = bgp_sum["bgp_neigh"]
@@ -118,7 +121,7 @@ def bgp_check(task):
                     neigh_as,
                     prefix,
                     up_down,
-                    Fore.GREEN + Style.BRIGHT + ("UP") + Fore.RESET,
+                    up,
                     ping,
                     ping_sum,
                 ]
@@ -133,7 +136,7 @@ def bgp_check(task):
                     neigh_as,
                     prefix,
                     up_down,
-                    Fore.RED + Style.BRIGHT + ("DOWN") + Fore.RESET,
+                    down,
                     ping,
                     ping_sum,
                 ]
@@ -148,7 +151,7 @@ def bgp_check(task):
                     neigh_as,
                     prefix,
                     up_down,
-                    Fore.YELLOW + Style.BRIGHT + ("WAITING") + Fore.RESET,
+                    waiting,
                     ping,
                     ping_sum,
                 ]
