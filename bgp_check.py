@@ -35,9 +35,9 @@ def bgp_check(task):
 
     bgp_down_states = ["Idle (Admin)", "Idle (PfxCt)", "Idle", "Active", "Connect"]
     bgp_peer_states = ["Open Sent", "Open Confirm"]
-    up = Fore.GREEN + Style.BRIGHT + ("UP") + Fore.RESET
-    down = Fore.RED + Style.BRIGHT + ("DOWN") + Fore.RESET
-    waiting = Fore.YELLOW + Style.BRIGHT + ("WAITING") + Fore.RESET
+    up = Fore.GREEN + Style.BRIGHT + ("UP") + Fore.RESET + Style.RESET_ALL
+    down = Fore.RED + Style.BRIGHT + ("DOWN") + Fore.RESET + Style.RESET_ALL
+    waiting = Fore.YELLOW + Style.BRIGHT + ("WAITING") + Fore.RESET + Style.RESET_ALL
 
     for bgp_sum in bgp_sums:
         neighbor = bgp_sum["bgp_neigh"]
@@ -99,7 +99,7 @@ def bgp_check(task):
 
         ping_cmd = task.run(
             netmiko_send_command,
-            command_string=f"ping {destination} repeat 20 source {source}",
+            command_string=f"ping {destination} repeat 50 source {source}",
         )
         task.host["ping"] = ping_cmd.result
         ping_results = task.host["ping"]
@@ -108,9 +108,9 @@ def bgp_check(task):
         # print(ping_results)
 
         if not "!!!!!!!!!!!!!!!!!!!!" in ping:
-            ping_sum = Fore.RED + Style.BRIGHT + f"INTERMITTENT! -> {desc}" + Fore.RESET
-        else:
-            ping_sum = Fore.GREEN + Style.BRIGHT + "OK! No RTO" + Fore.RESET
+            ping_sum = Fore.RED + Style.BRIGHT + f"INTERMITTENT! -> {desc}" + Fore.RESET + Style.RESET_ALL
+        else: 
+            ping_sum = Fore.GREEN + Style.BRIGHT + "OK! No RTO" + Fore.RESET + Style.RESET_ALL
 
         if prefix not in bgp_down_states:
             table.append(
